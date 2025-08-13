@@ -5,6 +5,7 @@ services:
     build: .
     container_name: node_api
     restart: always
+    user: "${UID}:${GID}"
     ports:
       - "${PORT}:${PORT}"
     environment:
