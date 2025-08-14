@@ -1,23 +1,13 @@
-# Última versão LTS do Node.js baseada no Alpine
-FROM node:22-alpine
+FROM node:22-bookworm
 
-# Criar diretório de trabalho
 WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends default-mysql-client && rm -rf /var/lib/apt/lists/*
 
-# Copiar package.json e package-lock.json primeiro para aproveitar cache
 COPY package*.json ./
-
-# Instalar dependências
-RUN npm install
-
-# Copiar o restante do código
+RUN npm ci
 COPY . .
+RUN chmod +x /app/docker-entrypoint.sh
 
-# Variáveis de ambiente padrão
-ENV PORT=3000
-
-# Expor a porta da API
 EXPOSE 3000
-
-# Comando padrão
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
 CMD ["npm", "run", "dev"]
