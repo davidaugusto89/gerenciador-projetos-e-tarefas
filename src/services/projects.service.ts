@@ -3,14 +3,14 @@ import { ProjectsRepo } from '../repositories/projects.repo';
 export const ProjectsService = {
   /**
    * Cria um novo projeto.
-   * @param {{ name: string; description?: string | null; status?: 'active' | 'archived' }} payload - Dados do projeto.
+   * @param {{ name: string; description?: string | null | undefined; status?: 'active' | 'archived' }} payload - Dados do projeto.
    * @returns {Promise<Project>} Projeto criado.
    * @example
    * await ProjectsService.create({ name: 'Novo Projeto', status: 'active' });
    */
   create: (payload: {
     name: string;
-    description?: string | null;
+    description?: string | null | undefined;
     status?: 'active' | 'archived';
   }): Promise<unknown> => ProjectsRepo.create(payload),
 

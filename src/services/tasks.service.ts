@@ -13,7 +13,11 @@ export const TasksService = {
    */
   async create(
     projectId: number,
-    payload: { title: string; description?: string | null | undefined; status?: string },
+    payload: {
+      title: string;
+      description?: string | null | undefined;
+      status?: 'pending' | 'in_progress' | 'done';
+    },
   ): Promise<unknown> {
     const project = await ProjectsRepo.findById(projectId);
     if (!project) {

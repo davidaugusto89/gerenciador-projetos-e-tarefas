@@ -34,12 +34,15 @@ export type GithubRepo = {
  * @example
  * const projeto = await Project.create({ name: 'Novo Projeto', status: 'active' });
  */
+
 export class Project extends Model<InferAttributes<Project>, InferCreationAttributes<Project>> {
   declare id: CreationOptional<number>;
   declare name: string;
-  declare description: string | null;
-  declare status: 'active' | 'archived';
-  declare githubRepos: GithubRepo[] | null;
+
+  declare description: CreationOptional<string | null>;
+  declare status: CreationOptional<'active' | 'archived'>;
+  declare githubRepos: CreationOptional<GithubRepo[] | null>;
+
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -53,18 +56,29 @@ export class Project extends Model<InferAttributes<Project>, InferCreationAttrib
  * import { initProjectModel } from './project';
  * initProjectModel(sequelize);
  */
+
 export const initProjectModel = (sequelize: Sequelize): void => {
   Project.init(
     {
       id: { type: DataTypes.INTEGER.UNSIGNED, primaryKey: true, autoIncrement: true },
       name: { type: DataTypes.STRING(120), allowNull: false },
-      description: { type: DataTypes.TEXT(), allowNull: true },
+
+      // manter allowNull e (opcionalmente) defaultValue para refletir a optionalidade
+      description: { type: DataTypes.TEXT(), allowNull: true, defaultValue: null },
+
       status: {
         type: DataTypes.ENUM('active', 'archived'),
         allowNull: false,
         defaultValue: 'active',
       },
-      githubRepos: { type: DataTypes.JSON(), allowNull: true, field: 'github_repos' },
+
+      githubRepos: {
+        type: DataTypes.JSON(),
+        allowNull: true,
+        field: 'github_repos',
+        defaultValue: null,
+      },
+
       createdAt: {
         type: DataTypes.DATE(),
         allowNull: false,

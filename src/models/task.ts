@@ -24,10 +24,12 @@ import {
  */
 export class Task extends Model<InferAttributes<Task>, InferCreationAttributes<Task>> {
   declare id: CreationOptional<number>;
-  declare projectId: number; // field: project_id
-  declare title: string; // STRING(120)
-  declare description: string | null; // TEXT
-  declare status: 'pending' | 'in_progress' | 'done';
+  declare projectId: number;
+  declare title: string;
+
+  declare description: CreationOptional<string | null>;
+  declare status: CreationOptional<'pending' | 'in_progress' | 'done'>;
+
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
