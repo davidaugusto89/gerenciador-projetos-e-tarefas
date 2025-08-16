@@ -21,7 +21,7 @@ export const TasksService = {
   ): Promise<unknown> {
     const project = await ProjectsRepo.findById(projectId);
     if (!project) {
-      throw Object.assign(new Error('Project not found'), { status: 404 });
+      throw Object.assign(new Error('Projeto não encontrado'), { status: 404 });
     }
 
     return TasksRepo.create({ ...payload, projectId });
@@ -47,13 +47,14 @@ export const TasksService = {
   /**
    * Remove uma tarefa pelo ID informado.
    * @param {number} id - ID da tarefa a ser removida.
-   * @returns {Promise<void>} Resolve se a tarefa for removida.
+   * @returns {Promise<number>} Resolve se a tarefa for removida.
    * @throws {Error} Se a tarefa não for encontrada.
    * @example
    * await TasksService.remove(1);
    */
-  remove: async (id: number): Promise<void> => {
+  remove: async (id: number): Promise<number> => {
     const deleted = await TasksRepo.deleteById(id);
-    if (!deleted) throw Object.assign(new Error('Task not found'), { status: 404 });
+    if (!deleted) throw Object.assign(new Error('Tarefa não encontrada'), { status: 404 });
+    return deleted;
   },
 };

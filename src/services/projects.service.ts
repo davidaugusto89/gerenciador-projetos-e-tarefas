@@ -32,7 +32,7 @@ export const ProjectsService = {
    */
   get: async (id: number): Promise<unknown> => {
     const project = await ProjectsRepo.findById(id);
-    if (!project) throw Object.assign(new Error('Project not found'), { status: 404 });
+    if (!project) throw Object.assign(new Error('Projeto não encontrado'), { status: 404 });
     return project;
   },
 
@@ -47,20 +47,21 @@ export const ProjectsService = {
    */
   update: async (id: number, payload: Partial<unknown>): Promise<unknown> => {
     const updated = await ProjectsRepo.updateById(id, payload);
-    if (!updated) throw Object.assign(new Error('Project not found'), { status: 404 });
+    if (!updated) throw Object.assign(new Error('Projeto não encontrado'), { status: 404 });
     return updated;
   },
 
   /**
    * Remove um projeto pelo ID informado.
    * @param {number} id - ID do projeto a ser removido.
-   * @returns {Promise<void>} Resolve se o projeto for removido.
+   * @returns {Promise<number>} Resolve se o projeto for removido.
    * @throws {Error} Se o projeto não for encontrado.
    * @example
    * await ProjectsService.remove(1);
    */
-  remove: async (id: number): Promise<void> => {
+  remove: async (id: number): Promise<number> => {
     const deleted = await ProjectsRepo.deleteById(id);
-    if (!deleted) throw Object.assign(new Error('Project not found'), { status: 404 });
+    if (!deleted) throw Object.assign(new Error('Projeto não encontrado'), { status: 404 });
+    return deleted;
   },
 };

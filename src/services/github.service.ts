@@ -29,7 +29,7 @@ type GitHubRepo = {
 export const GitHubService = {
   async fetchAndAttach(projectId: number, username: string) {
     const project = await ProjectsRepo.findById(projectId);
-    if (!project) throw Object.assign(new Error('Project not found'), { status: 404 });
+    if (!project) throw Object.assign(new Error('Projeto não encontrado'), { status: 404 });
 
     const cacheKey = `gh:${username}:last5`;
     let repos = cache.get<GitHubRepo[]>(cacheKey);

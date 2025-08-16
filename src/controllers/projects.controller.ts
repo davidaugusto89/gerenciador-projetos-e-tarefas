@@ -92,7 +92,13 @@ export const ProjectsController = {
    */
   remove: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await ProjectsService.remove(Number(req.params.id));
+      const id = Number(req.params.id);
+      const deleted = await ProjectsService.remove(id);
+
+      if (!deleted) {
+        throw Object.assign(new Error('Projeto não encontrado'), { status: 404 });
+      }
+
       res.status(204).send();
     } catch (err) {
       next(err);
