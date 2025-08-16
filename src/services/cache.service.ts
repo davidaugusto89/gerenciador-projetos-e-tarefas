@@ -11,12 +11,19 @@ type CacheEntry<T> = { value: T; expiresAt: number };
  */
 export class InMemoryCache {
   private store = new Map<string, CacheEntry<unknown>>();
+  private enabled: boolean = true;
 
   /**
    * Cria uma instância de cache em memória.
    * @param {number} [defaultTtlMs=600000] - Tempo padrão de expiração em milissegundos (default: 10 minutos).
+   * @param {boolean} [enabled=true] - Indica se o cache está habilitado (default: true).
    */
-  constructor(private defaultTtlMs: number = 10 * 60 * 1000) {}
+  constructor(
+    private defaultTtlMs: number = 10 * 60 * 1000,
+    enabled: boolean = true,
+  ) {
+    this.enabled = enabled;
+  }
 
   /**
    * Recupera um valor do cache pela chave informada.
@@ -27,6 +34,8 @@ export class InMemoryCache {
    * const valor = cache.get<string>('minha-chave');
    */
   get<T>(key: string): T | null {
+    if (!this.enabled) return null;
+
     const entry = this.store.get(key);
     if (!entry) return null;
     if (Date.now() > entry.expiresAt) {
@@ -47,8 +56,12 @@ export class InMemoryCache {
    * cache.set('token', 'abc123', 30000);
    */
   set<T>(key: string, value: T, ttlMs: number = this.defaultTtlMs): void {
+    if (!this.enabled) return;
+
     this.store.set(key, { value, expiresAt: Date.now() + ttlMs });
   }
 }
 
-export const cache = new InMemoryCache();
+const CACHE_DISABLED = process.env.NODE_ENV === 'test' || process.env.CACHE_DISABLED === 'true';
+
+export const cache = new InMemoryCache(10 * 60 * 1000, !CACHE_DISABLED);

@@ -54,14 +54,14 @@ export const ProjectsService = {
   /**
    * Remove um projeto pelo ID informado.
    * @param {number} id - ID do projeto a ser removido.
-   * @returns {Promise<number>} Resolve se o projeto for removido.
+   * @returns {Promise<void>} Resolve se o projeto for removido.
    * @throws {Error} Se o projeto não for encontrado.
    * @example
    * await ProjectsService.remove(1);
    */
-  remove: async (id: number): Promise<number> => {
+  remove: async (id: number): Promise<void> => {
     const deleted = await ProjectsRepo.deleteById(id);
-    if (!deleted) throw Object.assign(new Error('Projeto não encontrado'), { status: 404 });
-    return deleted;
+    if (deleted > 0) return;
+    throw Object.assign(new Error('Projeto não encontrado'), { status: 404 });
   },
 };

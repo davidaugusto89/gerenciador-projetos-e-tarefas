@@ -4,10 +4,13 @@ import morgan from 'morgan';
 
 import projectsRouter from './routes/projects.routes';
 import tasksRouter from './routes/tasks.routes';
+import { setupSwagger } from './swagger';
 
 export const app = express();
 app.use(express.json());
 app.use(morgan('dev'));
+
+setupSwagger(app);
 
 app.use('/', projectsRouter);
 app.use('/', tasksRouter);

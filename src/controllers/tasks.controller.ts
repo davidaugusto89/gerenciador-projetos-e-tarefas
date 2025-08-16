@@ -54,12 +54,7 @@ export const TasksController = {
   remove: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = Number(req.params.id);
-      const deleted = await TasksService.remove(id);
-
-      if (!deleted) {
-        throw Object.assign(new Error('Tarefa não encontrado'), { status: 404 });
-      }
-
+      await TasksService.remove(id);
       res.status(204).send();
     } catch (err) {
       next(err);

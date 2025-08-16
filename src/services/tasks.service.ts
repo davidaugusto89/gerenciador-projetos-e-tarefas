@@ -47,14 +47,14 @@ export const TasksService = {
   /**
    * Remove uma tarefa pelo ID informado.
    * @param {number} id - ID da tarefa a ser removida.
-   * @returns {Promise<number>} Resolve se a tarefa for removida.
+   * @returns {Promise<void>} Resolve se a tarefa for removida.
    * @throws {Error} Se a tarefa não for encontrada.
    * @example
    * await TasksService.remove(1);
    */
-  remove: async (id: number): Promise<number> => {
+  async remove(id: number): Promise<void> {
     const deleted = await TasksRepo.deleteById(id);
-    if (!deleted) throw Object.assign(new Error('Tarefa não encontrada'), { status: 404 });
-    return deleted;
+    if (deleted > 0) return;
+    throw Object.assign(new Error('Task not found'), { status: 404 });
   },
 };
