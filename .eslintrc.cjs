@@ -10,9 +10,8 @@ module.exports = {
   env: {
     node: true,
     es2022: true,
-    jest: true,
   },
-  plugins: ['@typescript-eslint', 'import', 'promise', 'prettier'],
+  plugins: ['@typescript-eslint', 'import', 'promise', 'prettier', 'jest'],
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
@@ -38,5 +37,24 @@ module.exports = {
       },
     ],
   },
+  overrides: [
+    {
+      files: ['**/*.test.ts', '**/__tests__/**/*.ts', 'tests/**/*.ts'],
+      env: { jest: true, node: true },
+      extends: ['plugin:jest/recommended'],
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-unused-vars': [
+          'warn',
+          {
+            argsIgnorePattern: '^_',
+            varsIgnorePattern: '^_',
+            caughtErrorsIgnorePattern: '^_',
+          },
+        ],
+        'import/order': 'off',
+      },
+    },
+  ],
   ignorePatterns: ['dist', 'node_modules'],
 };

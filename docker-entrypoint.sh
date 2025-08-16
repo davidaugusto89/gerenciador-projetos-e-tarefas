@@ -10,6 +10,11 @@ while ! mariadb-admin ping -h"$DB_HOST" -P"$DB_PORT" --silent >/dev/null 2>&1; d
 done
 echo "✅ MySQL está respondendo"
 
+echo "💻 Criando banco de dados..."
+
+mariadb -h"${DB_HOST_TEST:-$DB_HOST}" -P"${DB_PORT_TEST:-$DB_PORT}" -u"$DB_USER" -p"$DB_PASSWORD" -N -e \
+  "CREATE DATABASE IF NOT EXISTS \`${DB_NAME_TEST:-projects_db_test}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+
 echo "📦 Executando migrations..."
 npx sequelize-cli db:migrate --config src/database/config.js
 

@@ -1,48 +1,69 @@
+// src/models/task.ts
 import {
   DataTypes,
+  Model,
   InferAttributes,
   InferCreationAttributes,
-  Model,
   CreationOptional,
-  ForeignKey,
+  Sequelize,
 } from 'sequelize';
 
-import sequelize from './index';
-import { Project } from './project';
-
-export type TaskStatus = 'todo' | 'doing' | 'done';
-
+/**
+ * Modelo Sequelize para tarefas.
+ * Representa uma tarefa associada a um projeto.
+ *
+ * @property {number} id - Identificador único da tarefa.
+ * @property {number} projectId - ID do projeto ao qual a tarefa pertence.
+ * @property {string} title - Título da tarefa.
+ * @property {string|null} description - Descrição da tarefa.
+ * @property {'pending'|'in_progress'|'done'} status - Status da tarefa.
+ * @property {Date} createdAt - Data de criação.
+ * @property {Date} updatedAt - Data de atualização.
+ *
+ * @example
+ * const tarefa = await Task.create({ projectId: 1, title: 'Nova tarefa', status: 'pending' });
+ */
 export class Task extends Model<InferAttributes<Task>, InferCreationAttributes<Task>> {
   declare id: CreationOptional<number>;
-  declare title: string;
-  declare description: string | null;
-  declare status: TaskStatus;
-  declare projectId: ForeignKey<Project['id']> | null;
+  declare projectId: number; // field: project_id
+  declare title: string; // STRING(120)
+  declare description: string | null; // TEXT
+  declare status: 'pending' | 'in_progress' | 'done';
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
 
-Task.init(
-  {
-    id: { type: DataTypes.INTEGER.UNSIGNED, primaryKey: true, autoIncrement: true },
-    title: { type: DataTypes.STRING(150), allowNull: false },
-    description: { type: DataTypes.TEXT, allowNull: true },
-    status: {
-      type: DataTypes.ENUM('todo', 'doing', 'done'),
-      allowNull: false,
-      defaultValue: 'todo',
+export const initTaskModel = (sequelize: Sequelize) => {
+  Task.init(
+    {
+      id: { type: DataTypes.INTEGER.UNSIGNED, primaryKey: true, autoIncrement: true },
+      projectId: { type: DataTypes.INTEGER.UNSIGNED, allowNull: false, field: 'project_id' },
+      title: { type: DataTypes.STRING(120), allowNull: false },
+      description: { type: DataTypes.TEXT, allowNull: true },
+      status: {
+        type: DataTypes.ENUM('pending', 'in_progress', 'done'),
+        allowNull: false,
+        defaultValue: 'pending',
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+        field: 'created_at',
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+        field: 'updated_at',
+      },
     },
-    projectId: { type: DataTypes.INTEGER.UNSIGNED, allowNull: true },
-    createdAt: DataTypes.DATE,
-    updatedAt: DataTypes.DATE,
-  },
-  {
-    sequelize,
-    tableName: 'tasks',
-    modelName: 'Task',
-  },
-);
-
-// Associações
-Project.hasMany(Task, { foreignKey: 'projectId', as: 'tasks', onDelete: 'CASCADE' });
-Task.belongsTo(Project, { foreignKey: 'projectId', as: 'project' });
+    {
+      sequelize,
+      tableName: 'tasks',
+      modelName: 'Task',
+      timestamps: true,
+      underscored: true,
+    },
+  );
+};

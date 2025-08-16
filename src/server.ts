@@ -1,69 +1,37 @@
-import cors from 'cors';
-import dotenv from 'dotenv';
-import express from 'express';
-import helmet from 'helmet';
-import Redis from 'ioredis';
+import 'dotenv/config';
+import express, { Request, Response, NextFunction } from 'express';
+import morgan from 'morgan';
 
-import sequelize from './models';
-import './models/project';
-import './models/task';
-
-dotenv.config();
+import { sequelize } from './models';
+import projectsRouter from './routes/projects.routes';
+import tasksRouter from './routes/tasks.routes';
 
 const app = express();
-
-// Middlewares globais
-app.use(helmet());
-app.use(cors());
 app.use(express.json());
+app.use(morgan('dev'));
 
-// Conexão com Redis
-const redis = new Redis({
-  host: process.env.REDIS_HOST || 'localhost',
-  port: Number(process.env.REDIS_PORT) || 6379,
+app.use('/projects', projectsRouter);
+app.use('/tasks', tasksRouter);
+
+// Healthcheck
+app.get('/health', (_req, res) => res.json({ status: 'ok' }));
+
+// Error handler
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+  const status =
+    typeof (err as { status?: unknown })?.status === 'number'
+      ? (err as { status: number }).status
+      : 500;
+  const message = err instanceof Error ? err.message : 'Internal Server Error';
+  res.status(status).json({ error: message });
 });
 
-redis.on('connect', () => {
-  console.log('✅ Conectado ao Redis');
-});
+const PORT = process.env.PORT || 3000;
 
-redis.on('error', (err) => {
-  console.error('❌ Erro no Redis:', err);
-});
-
-(async () => {
-  try {
-    await sequelize.authenticate();
-    console.log('✅ MySQL conectado via Sequelize');
-  } catch (err) {
-    console.error('❌ Falha ao conectar no DB:', err);
-    process.exit(1);
-  }
-})();
-
-// Rota de teste de saúde
-app.get('/health', async (_req, res) => {
-  const cacheKey = 'health_check';
-  const cached = await redis.get(cacheKey);
-
-  if (cached) {
-    return res.json({ source: 'cache', data: JSON.parse(cached) });
-  }
-
-  const data = { status: 'ok', uptime: process.uptime() };
-
-  // Cache expira em 10 segundos
-  await redis.set(cacheKey, JSON.stringify(data), 'EX', 10);
-
-  res.json({ source: 'server', data });
-});
-
-// Configuração de porta
-const PORT = Number(process.env.PORT) || 3000;
-const HOST = '0.0.0.0';
-
-app.listen(PORT, HOST, () => {
-  console.log(`🚀 Servidor rodando em http://${HOST === '0.0.0.0' ? 'localhost' : HOST}:${PORT}`);
-});
-
-export { app, redis };
+async function start() {
+  await sequelize.authenticate();
+  console.log('Database connected');
+  app.listen(PORT, () => console.log(`API running on :${PORT}`));
+}
+start();
