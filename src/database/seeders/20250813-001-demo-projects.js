@@ -2,10 +2,21 @@
 
 module.exports = {
   async up(queryInterface) {
-    const now = new Date();
     await queryInterface.bulkInsert('projects', [
-      { title: 'Projeto Alpha', description: 'Primeiro projeto', createdAt: now, updatedAt: now },
-      { title: 'Projeto Beta', description: 'Segundo projeto', createdAt: now, updatedAt: now },
+      {
+        name: 'Projeto Alpha',
+        description: 'Primeiro projeto demo',
+        status: 'active',
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
+        name: 'Projeto Beta',
+        description: 'Segundo projeto demo',
+        status: 'active',
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
     ]);
   },
 

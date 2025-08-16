@@ -1,27 +1,24 @@
 'use strict';
 
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('projects', {
       id: { type: Sequelize.INTEGER.UNSIGNED, primaryKey: true, autoIncrement: true },
-      title: { type: Sequelize.STRING(150), allowNull: false },
+      name: { type: Sequelize.STRING(120), allowNull: false },
       description: { type: Sequelize.TEXT, allowNull: true },
-      createdAt: {
-        type: Sequelize.DATE,
+      status: {
+        type: Sequelize.ENUM('active', 'archived'),
         allowNull: false,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+        defaultValue: 'active',
       },
-      updatedAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
-      },
+      github_repos: { type: Sequelize.JSON, allowNull: true },
+      created_at: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.fn('NOW') },
+      updated_at: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.fn('NOW') },
     });
-    await queryInterface.addIndex('projects', ['title'], { name: 'idx_projects_title' });
   },
 
   async down(queryInterface) {
-    await queryInterface.removeIndex('projects', 'idx_projects_title');
     await queryInterface.dropTable('projects');
   },
 };

@@ -1,44 +1,33 @@
 'use strict';
 
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('tasks', {
       id: { type: Sequelize.INTEGER.UNSIGNED, primaryKey: true, autoIncrement: true },
-      title: { type: Sequelize.STRING(150), allowNull: false },
-      description: { type: Sequelize.TEXT, allowNull: true },
-      status: {
-        type: Sequelize.ENUM('todo', 'doing', 'done'),
-        allowNull: false,
-        defaultValue: 'todo',
-      },
-      projectId: {
+      project_id: {
         type: Sequelize.INTEGER.UNSIGNED,
-        allowNull: true,
+        allowNull: false,
         references: { model: 'projects', key: 'id' },
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
       },
-      createdAt: {
-        type: Sequelize.DATE,
+      title: { type: Sequelize.STRING(160), allowNull: false },
+      description: { type: Sequelize.TEXT, allowNull: true },
+      status: {
+        type: Sequelize.ENUM('pending', 'in_progress', 'done'),
         allowNull: false,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
+        defaultValue: 'pending',
       },
-      updatedAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
-      },
+      created_at: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.fn('NOW') },
+      updated_at: { type: Sequelize.DATE, allowNull: false, defaultValue: Sequelize.fn('NOW') },
     });
-    await queryInterface.addIndex('tasks', ['title'], { name: 'idx_tasks_title' });
-    await queryInterface.addIndex('tasks', ['status'], { name: 'idx_tasks_status' });
+
+    await queryInterface.addIndex('tasks', ['project_id']);
+    await queryInterface.addIndex('tasks', ['status']);
   },
 
   async down(queryInterface) {
-    await queryInterface.removeIndex('tasks', 'idx_tasks_title');
-    await queryInterface.removeIndex('tasks', 'idx_tasks_status');
     await queryInterface.dropTable('tasks');
-    await queryInterface.sequelize
-      .query('DROP TYPE IF EXISTS "enum_tasks_status";')
-      .catch(() => {});
   },
 };

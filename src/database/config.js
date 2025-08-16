@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv/config');
 
 module.exports = {
   development: {
@@ -8,16 +8,18 @@ module.exports = {
     host: process.env.DB_HOST || '127.0.0.1',
     port: Number(process.env.DB_PORT || 3306),
     dialect: 'mysql',
-    logging: false,
+    logging: process.env.DB_LOGGING === 'true' ? console.log : false,
+    define: { underscored: true, timestamps: true },
   },
   test: {
     username: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
-    database: (process.env.DB_NAME || 'projects_db') + '_test',
+    database: process.env.DB_NAME ? `${process.env.DB_NAME}` : 'projects_db_test',
     host: process.env.DB_HOST || '127.0.0.1',
     port: Number(process.env.DB_PORT || 3306),
     dialect: 'mysql',
     logging: false,
+    define: { underscored: true, timestamps: true },
   },
   production: {
     username: process.env.DB_USER,
@@ -27,5 +29,6 @@ module.exports = {
     port: Number(process.env.DB_PORT || 3306),
     dialect: 'mysql',
     logging: false,
+    define: { underscored: true, timestamps: true },
   },
 };

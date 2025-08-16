@@ -6,17 +6,19 @@ import { sequelize } from './models';
 import projectsRouter from './routes/projects.routes';
 import tasksRouter from './routes/tasks.routes';
 
-const app = express();
+export const app = express();
 app.use(express.json());
 app.use(morgan('dev'));
 
-app.use('/projects', projectsRouter);
-app.use('/tasks', tasksRouter);
+app.use('/', projectsRouter);
+app.use('/', tasksRouter);
 
-// Healthcheck
-app.get('/health', (_req, res) => res.json({ status: 'ok' }));
+// Healthcheck - versão Mandalorian
+app.get('/health', (_req: Request, res: Response) => {
+  res.json({ status: 'ok', message: 'This is the way.' });
+});
 
-// Error handler
+// Error handler tipado (sem any)
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
   const status =
@@ -27,11 +29,8 @@ app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
   res.status(status).json({ error: message });
 });
 
-const PORT = process.env.PORT || 3000;
-
-async function start() {
+// opcional: helper para os testes fazerem auth/sync se precisarem
+export async function ensureDb() {
   await sequelize.authenticate();
-  console.log('Database connected');
-  app.listen(PORT, () => console.log(`API running on :${PORT}`));
+  // se quiser sincronizar nos testes: await sequelize.sync({ force: true });
 }
-start();

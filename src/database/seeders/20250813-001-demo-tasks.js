@@ -2,34 +2,31 @@
 
 module.exports = {
   async up(queryInterface) {
-    const [projects] = await queryInterface.sequelize.query('SELECT id FROM projects ORDER BY id');
-    const now = new Date();
-    if (!projects.length) return;
-
+    // Assumindo que os dois primeiros projetos têm IDs 1 e 2
     await queryInterface.bulkInsert('tasks', [
       {
-        title: 'Planejar escopo',
-        description: 'Definir requisitos',
-        status: 'doing',
-        projectId: projects[0].id,
-        createdAt: now,
-        updatedAt: now,
+        project_id: 1,
+        title: 'Configurar ambiente',
+        description: 'Instalar deps',
+        status: 'pending',
+        created_at: new Date(),
+        updated_at: new Date(),
       },
       {
-        title: 'Criar endpoints',
-        description: 'CRUD de projects',
-        status: 'todo',
-        projectId: projects[0].id,
-        createdAt: now,
-        updatedAt: now,
+        project_id: 1,
+        title: 'Criar models',
+        description: null,
+        status: 'in_progress',
+        created_at: new Date(),
+        updated_at: new Date(),
       },
       {
-        title: 'Modelar DB',
-        description: 'Tabelas tasks',
-        status: 'todo',
-        projectId: projects[1]?.id || projects[0].id,
-        createdAt: now,
-        updatedAt: now,
+        project_id: 2,
+        title: 'Escrever README',
+        description: null,
+        status: 'pending',
+        created_at: new Date(),
+        updated_at: new Date(),
       },
     ]);
   },
