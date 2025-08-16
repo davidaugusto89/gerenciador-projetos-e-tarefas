@@ -2,7 +2,6 @@ import 'dotenv/config';
 import express, { Request, Response, NextFunction } from 'express';
 import morgan from 'morgan';
 
-import { sequelize } from './models';
 import projectsRouter from './routes/projects.routes';
 import tasksRouter from './routes/tasks.routes';
 
@@ -13,7 +12,7 @@ app.use(morgan('dev'));
 app.use('/', projectsRouter);
 app.use('/', tasksRouter);
 
-// Healthcheck - versão Mandalorian
+// Health
 app.get('/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok', message: 'This is the way.' });
 });
@@ -28,9 +27,3 @@ app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
   const message = err instanceof Error ? err.message : 'Internal Server Error';
   res.status(status).json({ error: message });
 });
-
-// opcional: helper para os testes fazerem auth/sync se precisarem
-export async function ensureDb() {
-  await sequelize.authenticate();
-  // se quiser sincronizar nos testes: await sequelize.sync({ force: true });
-}

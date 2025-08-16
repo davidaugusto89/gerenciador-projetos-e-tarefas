@@ -1,4 +1,3 @@
-// src/models/task.ts
 import {
   DataTypes,
   Model,
