@@ -1,4 +1,4 @@
-# 📂 Gerenciador de Projetos e Tarefas — Node.js (Desafio Técnico)
+# 📂 Gerenciador de Projetos e Tarefas — Node.js
 
 API REST para gerenciar **projetos** e **tarefas** com **Node.js + Express**, **MySQL** (ORM **Sequelize**), arquitetura em camadas (`controllers → services → repositories`), cache (Redis opcional), documentação Swagger e testes (unitários e E2E).
 
@@ -271,7 +271,7 @@ Há testes **unitários** e **E2E** em `tests/`.
 
 ---
 
-## 🗄️ Banco de Dados, Migrations e Seeders
+## 🛢️ Banco de Dados, Migrations e Seeders
 
 As **migrations/seeders** são executadas automaticamente pelo entrypoint ao subir os serviços.
 
