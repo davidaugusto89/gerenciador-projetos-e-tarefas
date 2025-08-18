@@ -214,6 +214,23 @@ http://localhost:3000/api-docs
 
 ---
 
+## 📥 Importar no Insomnia ou Postman
+
+### YAML — `docs/gerenciador-de-projetos-e-tarefas.yaml`
+- Pode ser importado diretamente no **Insomnia** ou **Postman**.
+- **Insomnia:** `Application → Import/Export → Import Data → From File` e selecione o `.yaml`
+  _(gera uma Collection com rotas e schemas)_.
+- **Postman:** `Import → File` e selecione o `.yaml`
+  _(gera uma Collection a partir da especificação OpenAPI)_.
+
+### HAR — `docs/gerenciador-de-projetos-e-tarefas.har`
+- Também pode ser importado no **Insomnia** ou **Postman**.
+- **Insomnia/Postman:** `Import → File` e selecione o `.har`
+  _(carrega requisições reais de exemplo para reproduzir chamadas)_.
+
+
+---
+
 ## 🔗 Endpoints Principais
 
 ### Projetos
@@ -276,27 +293,6 @@ docker compose exec api npx sequelize-cli db:migrate:undo:all --config src/datab
 - **CORS**, **Helmet**, **Compression**, **Rate limiting**.
 - **Logs** estruturados (`morgan`).
 - **Camadas** bem definidas: `controllers → services → repositories → models`.
-
----
-
-## 🧰 Comandos úteis
-
-```bash
-# Subir tudo
-docker compose up -d --build
-
-# Logs
-docker compose logs -f api
-
-# Executar um comando na API
-docker compose exec api sh
-docker compose exec api node -v
-docker compose exec api npx sequelize-cli db:migrate --config src/database/config.js
-
-# Parar/Remover
-docker compose down
-docker compose down -v   # remove volumes/dados
-```
 
 ---
 
